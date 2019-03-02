@@ -2,7 +2,7 @@ package com.pingyougou.sellergoods.service;
 
 import java.util.List;
 
-import com.pinyougou.pojo.TbBrand;
+import com.pingyougou.pojo.TbBrand;
 
 import entity.PageResult;
 

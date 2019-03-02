@@ -21,113 +21,11 @@
 	<link rel="stylesheet" href="../plugins/angularjs/pagination.css">
 	<!-- 分页组件结束 -->
     
-	<script type="text/javascript">
-		//定义模块	并且引入 'pagination'模块
-		var app = angular.module('pingyougou',['pagination']);
-		//定义控制器
-		app.controller('brandController',function($scope,$http){
-			//$scope $http数据交互
-			$http.get('../brand/findAll.do').success(
-				function (response) {
-					$scope.list = response;
-				}
-			);
-			
-			//分页控件配置 
-			$scope.paginationConf = {
-				 currentPage: 1,
-				 totalItems: 10,
-				 itemsPerPage: 10,
-				 perPageOptions: [10, 20, 30, 40, 50],
-				 onChange: function(){
-				      $scope.reloadList();//重新加载
-				 }
-			}; 
-			//刷新页面
-			$scope.reloadList = function () {
-				//每一次加载，更新当前页码 currentPage 当前页的记录数 itemPerPage
-				$scope.search($scope.paginationConf.currentPage,$scope.paginationConf.itemsPerPage);
-			};
-			
-			//1,商品分页
-			$scope.findPage = function (page,size) {
-				$http.get('../brand/findPage.do?page='+page+'&size='+size).success(
-						function (response) {
-							$scope.list = response.rows;  //显示当前页数
-							 //更新总的记录数，由于页面加载默认初始化数为totalItems: 10
-							$scope.paginationConf.totalItems = response.total; 
-						}
-				);
-			};
-			
-			//2.商品保存（增加）
-			$scope.save = function () {
-				var methodName = 'add';
-				if ($scope.entity.id != null) {
-					methodName = 'update';
-				}
-				$http.post('../brand/'+methodName+'.do',$scope.entity).success(
-						function (response) {
-							if (response.success) {
-								//如果添加成功，只需重新查询页面记录
-								$scope.reloadList(); //重新加载页面
-							}else {
-								//添加失败
-								alert(response.message);
-							}
-						}
-				);
-			};
-			
-			//3.商品的查询，当页面点击修改的时候，文本框内获取相应的内容
-			$scope.findOne = function (id) {
-				$http.get('../brand/findOne.do?id='+id).success(
-						function (response) {
-							$scope.entity = response;
-						}
-				)
-			};
-			
-			//4.商品删除
-			//数据准备：要删除的商品的ID,定义一个数组ID
-			$scope.selectIds= [];
-			$scope.updateSelection = function ($event,id) {
-				//如果被选中，则为true
-				if ($event.target.checked) {
-					//如果被选中，将商品的ID添加到数组
-					$scope.selectIds.push(id);
-				}else {
-					//查询id的商品在数组的中的位置
-					var idx = $scope.selectIds.indexOf(id);
-					//参数1：要移除的位置 参数2：移除的个数
-					$scope.selectIds.splice(idx, 1); //删除
-				}
-			};
-			//批量删除
-			$scope.dele = function () {
-				//获取选中的复选框
-				$http.get('../brand/delete.do?ids='+$scope.selectIds).success(
-						function(response) {
-							if (response.success) {
-								$scope.reloadList();//刷新列表
-							}
-						}
-				);
-			};
-			
-			//5.条件查询
-			$scope.searchEntity={};//定义搜索对象 	
-			$scope.search = function (page,size) {
-				$http.post('../brand/search.do?page='+page+'&size='+size,$scope.searchEntity).success(
-					function (response) {
-						$scope.list = response.rows;
-						$scope.paginationConf.totalItems = response.total;
-					}		
-				)
-			}
-			
-		});
-	</script>
+    <script type="text/javascript" src="../js/base_pagination.js" ></script>
+    <script type="text/javascript" src="../js/service/brandService.js" ></script>
+    <script type="text/javascript" src="../js/controller/baseController.js" ></script>
+    <script type="text/javascript" src="../js/controller/brandController.js" ></script>
+	
     
 </head>
 <body class="hold-transition skin-red sidebar-mini" ng-app="pingyougou" ng-controller="brandController">
